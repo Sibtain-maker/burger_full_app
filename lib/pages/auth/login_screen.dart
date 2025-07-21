@@ -1,15 +1,15 @@
-import 'package:burger_app_full/pages/auth/login_screen.dart';
+import 'package:burger_app_full/pages/auth/signup_screen.dart';
 import 'package:burger_app_full/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 
-class Signup_screen extends StatefulWidget {
-  const Signup_screen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<Signup_screen> createState() => _Signup_screenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _Signup_screenState extends State<Signup_screen> {
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
   @override
@@ -22,7 +22,7 @@ class _Signup_screenState extends State<Signup_screen> {
           child: Column(
             children: [
               Image.asset(
-                'assets/login.jpg',
+                'assets/6343825.jpg',
                 width: double.maxFinite,
                 height: 500,
               ),
@@ -44,25 +44,25 @@ class _Signup_screenState extends State<Signup_screen> {
               ),
               SizedBox(height: 20),
               SizedBox(
-                child: MyButton(onPressed: () {}, buttonText: 'SIGN UP'),
+                width: double.maxFinite,
+                child: MyButton(onPressed: () {}, buttonText: 'Login'),
               ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Already have an account?',
-                    style: TextStyle(fontSize: 18),
-                  ),
+                  Text('Dont have an account?', style: TextStyle(fontSize: 18)),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => Signup_screen(),
+                        ),
                       );
                     },
                     child: Text(
-                      ' Login',
+                      ' Sign Up',
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.blue,
