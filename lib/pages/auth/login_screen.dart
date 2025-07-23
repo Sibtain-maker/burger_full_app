@@ -1,7 +1,6 @@
 import 'package:burger_app_full/pages/auth/signup_screen.dart';
 import 'package:burger_app_full/widgets/my_button.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -47,22 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 20),
                 SizedBox(
                   width: double.maxFinite,
-                  child: MyButton(
-                    onPressed: () async {
-                      final supbase = Supabase.instance.client;
-                      final AuthResponse res = await supbase.auth
-                          .signInWithPassword(
-                            email: emailcontroller.text,
-                            password: passwordcontroller.text,
-                          );
-                      if (res.user != null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Login successful!')),
-                        );
-                      }
-                    },
-                    buttonText: 'Login',
-                  ),
+                  child: MyButton(onPressed: () async {}, buttonText: 'Login'),
                 ),
                 SizedBox(height: 20),
                 Row(
