@@ -46,6 +46,7 @@ class _Signup_screenState extends State<Signup_screen> {
                 ),
                 SizedBox(height: 20),
                 SizedBox(
+                  width: double.maxFinite,
                   child: MyButton(
                     onPressed: () async {
                       final supbase = Supabase.instance.client;
@@ -59,6 +60,7 @@ class _Signup_screenState extends State<Signup_screen> {
                         );
                       }
                     },
+
                     buttonText: 'SIGN UP',
                   ),
                 ),
