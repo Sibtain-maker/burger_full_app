@@ -1,5 +1,7 @@
 import 'package:burger_app_full/pages/auth/login_screen.dart';
+import 'package:burger_app_full/service/auth_service.dart';
 import 'package:burger_app_full/widgets/my_button.dart';
+import 'package:burger_app_full/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 
 class Signup_screen extends StatefulWidget {
@@ -12,6 +14,23 @@ class Signup_screen extends StatefulWidget {
 class _Signup_screenState extends State<Signup_screen> {
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
+  final AuthService authService = AuthService();
+  // validate Email Formate
+  void signUp() async {
+    String email = emailcontroller.text;
+    String password = passwordcontroller.text;
+
+    if (!email.contains('.com')) {
+      showsnackBar(context, 'Please enter a valid email');
+    }
+    final result = await authService.signUp(email, password);
+    if (result == null) {
+      showsnackBar(context, 'Sign up successful');
+    } else {
+      showsnackBar(context, 'Sign up failed: $result');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
