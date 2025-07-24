@@ -1,4 +1,6 @@
+import 'package:burger_app_full/pages/Home/home_scree.dart';
 import 'package:burger_app_full/pages/auth/signup_screen.dart';
+import 'package:burger_app_full/service/auth_service.dart';
 import 'package:burger_app_full/widgets/my_button.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +14,31 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
+  final AuthService authService = AuthService();
+  bool isLoading = false;
+  void login() async {
+    String email = emailcontroller.text;
+    String password = passwordcontroller.text;
+    setState(() {
+      isLoading = true;
+    });
+    final result = await authService.Login_password(email, password);
+    setState(() {
+      isLoading = false;
+    });
+    if (result == null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Homescreen()),
+      );
+    } else {
+      // Show error (optional)
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Login failed: $result')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +54,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.maxFinite,
                   height: 500,
                 ),
-                // input text field for email
                 TextField(
                   controller: emailcontroller,
                   decoration: InputDecoration(
@@ -44,10 +70,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                SizedBox(
-                  width: double.maxFinite,
-                  child: MyButton(onPressed: () async {}, buttonText: 'Login'),
-                ),
+                isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : SizedBox(
+                        width: double.maxFinite,
+                        child: MyButton(onPressed: login, buttonText: 'Login'),
+                      ),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -23,25 +23,22 @@ class _Signup_screenState extends State<Signup_screen> {
 
     if (!email.contains('.com')) {
       showsnackBar(context, 'Please enter a valid email');
+      return;
     }
     setState(() {
       isloadin = true;
     });
     final result = await authService.signUp(email, password);
+    setState(() {
+      isloadin = false;
+    });
     if (result == null) {
-      // sucess case
-      setState(() {
-        isloadin = false;
-      });
       showsnackBar(context, 'Sign up successful');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     } else {
-      setState(() {
-        isloadin = false;
-      });
       showsnackBar(context, 'Sign up failed: $result');
     }
   }
