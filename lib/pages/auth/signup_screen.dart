@@ -15,6 +15,7 @@ class _Signup_screenState extends State<Signup_screen> {
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
   final AuthService authService = AuthService();
+  bool isloadin = false;
   // validate Email Formate
   void signUp() async {
     String email = emailcontroller.text;
@@ -23,10 +24,24 @@ class _Signup_screenState extends State<Signup_screen> {
     if (!email.contains('.com')) {
       showsnackBar(context, 'Please enter a valid email');
     }
+    setState(() {
+      isloadin = true;
+    });
     final result = await authService.signUp(email, password);
     if (result == null) {
+      // sucess case
+      setState(() {
+        isloadin = false;
+      });
       showsnackBar(context, 'Sign up successful');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
     } else {
+      setState(() {
+        isloadin = false;
+      });
       showsnackBar(context, 'Sign up failed: $result');
     }
   }
@@ -63,14 +78,16 @@ class _Signup_screenState extends State<Signup_screen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                SizedBox(
-                  width: double.maxFinite,
-                  child: MyButton(
-                    onPressed: () async {},
+                isloadin
+                    ? Center(child: CircularProgressIndicator())
+                    : SizedBox(
+                        width: double.maxFinite,
+                        child: MyButton(
+                          onPressed: signUp,
 
-                    buttonText: 'SIGN UP',
-                  ),
-                ),
+                          buttonText: 'SIGN UP',
+                        ),
+                      ),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
