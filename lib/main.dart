@@ -1,3 +1,5 @@
+import 'package:burger_app_full/pages/Home/home_scree.dart';
+import 'package:burger_app_full/pages/auth/login_screen.dart';
 import 'package:burger_app_full/pages/auth/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,6 +24,26 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Signup_screen(),
+    );
+  }
+}
+
+class Authcheck extends StatelessWidget {
+  final supabase = Supabase.instance.client;
+  Authcheck({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: supabase.auth.onAuthStateChange,
+      builder: (context, snapshot) {
+        final session = supabase.auth.currentSession;
+        if (session != null) {
+          return Homescreen();
+        } else {
+          return LoginScreen();
+        }
+      },
     );
   }
 }

@@ -10,6 +10,19 @@ class Homescreen extends StatefulWidget {
 class _HomescreenState extends State<Homescreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      backgroundColor: Colors.cyan,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "This app is for the Burger app that is used to for home delivery",
+              style: TextStyle(fontSize: 10, color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
