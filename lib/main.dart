@@ -41,7 +41,7 @@ class Authcheck extends StatelessWidget {
         if (session != null) {
           return Homescreen();
         } else {
-          return Homescreen();
+          return LoginScreen();
         }
       },
     );
