@@ -1,4 +1,4 @@
-import 'package:burger_app_full/pages/Home/home_scree.dart';
+import 'package:burger_app_full/pages/Screen/home_scree.dart';
 import 'package:burger_app_full/pages/auth/signup_screen.dart';
 import 'package:burger_app_full/service/auth_service.dart';
 import 'package:burger_app_full/widgets/my_button.dart';

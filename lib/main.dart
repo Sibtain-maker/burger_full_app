@@ -1,4 +1,5 @@
-import 'package:burger_app_full/pages/Home/home_scree.dart';
+import 'package:burger_app_full/pages/Screen/home_scree.dart';
+import 'package:burger_app_full/pages/Screen/on_bordingscreen.dart';
 import 'package:burger_app_full/pages/auth/login_screen.dart';
 import 'package:burger_app_full/pages/auth/signup_screen.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +22,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Signup_screen(),
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: Authcheck());
   }
 }
 
@@ -39,7 +37,7 @@ class Authcheck extends StatelessWidget {
       builder: (context, snapshot) {
         final session = supabase.auth.currentSession;
         if (session != null) {
-          return Homescreen();
+          return Onboarding();
         } else {
           return LoginScreen();
         }
