@@ -1,4 +1,6 @@
 import 'package:burger_app_full/Core/models/on_bording_model.dart';
+import 'package:burger_app_full/pages/Screen/Profile_screen.dart';
+import 'package:burger_app_full/pages/Screen/foood_app_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:burger_app_full/Core/Utils/const.dart';
 
@@ -12,6 +14,7 @@ class Onboarding extends StatefulWidget {
 class _OnboardingState extends State<Onboarding> {
   PageController _pageController = PageController();
   int currentPage = 0;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -126,7 +129,14 @@ class _OnboardingState extends State<Onboarding> {
                     ),
                     SizedBox(height: 20),
                     MaterialButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FooodAppHomeScreen(),
+                          ),
+                        );
+                      },
                       color: Colors.red,
                       height: 65,
                       minWidth: 250,

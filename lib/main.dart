@@ -1,4 +1,5 @@
-import 'package:burger_app_full/pages/Screen/home_scree.dart';
+import 'package:burger_app_full/pages/Screen/app_main_screen.dart';
+import 'package:burger_app_full/pages/Screen/Profile_screen.dart';
 import 'package:burger_app_full/pages/Screen/on_bordingscreen.dart';
 import 'package:burger_app_full/pages/auth/login_screen.dart';
 import 'package:burger_app_full/pages/auth/signup_screen.dart';
@@ -37,7 +38,7 @@ class Authcheck extends StatelessWidget {
       builder: (context, snapshot) {
         final session = supabase.auth.currentSession;
         if (session != null) {
-          return Onboarding();
+          return AppMainScreen();
         } else {
           return LoginScreen();
         }

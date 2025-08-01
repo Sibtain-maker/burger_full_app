@@ -1,4 +1,4 @@
-import 'package:burger_app_full/pages/Screen/home_scree.dart';
+import 'package:burger_app_full/pages/Screen/on_bordingscreen.dart';
 import 'package:burger_app_full/pages/auth/signup_screen.dart';
 import 'package:burger_app_full/service/auth_service.dart';
 import 'package:burger_app_full/widgets/my_button.dart';
@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (result == null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Homescreen()),
+        MaterialPageRoute(builder: (context) => Onboarding()),
       );
     } else {
       // Show error (optional)
