@@ -14,76 +14,87 @@ class AppMainScreen extends StatefulWidget {
 
 class _AppMainScreenState extends State<AppMainScreen> {
   int currentIndex = 0;
-  @override
   PageController _pageController = PageController();
   int currentPage = 0;
+
   final List<Widget> _pages = [
     FooodAppHomeScreen(),
     Scaffold(), // Heart page
     ProfileScreen(),
-    Scaffold(), // Cart page (add your cart screen here)
+    Scaffold(), // Cart page
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[currentIndex],
-      bottomNavigationBar: Container(
-        height: 90,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-          children: [
-            _buildNavitem(Iconsax.home_15, 'A', 0),
-            SizedBox(width: 10),
-            _buildNavitem(Iconsax.heart5, 'B', 1),
-            _buildNavitem(Icons.person_outline, 'C', 2),
-            SizedBox(width: 10),
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                _buildNavitem(Iconsax.shopping_cart, 'D', 3),
-                Positioned(
-                  right: -7,
-                  top: 16,
-                  child: CircleAvatar(
-                    radius: 10,
-                    backgroundColor: red,
-                    child: Text(
-                      '0',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+      body: Stack(
+        children: [
+          _pages[currentIndex],
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 90,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildNavitem(Iconsax.home_15, 'A', 0),
+                  _buildNavitem(Iconsax.heart5, 'B', 1),
+                  SizedBox(width: 60), // Space for center button
+                  _buildNavitem(Icons.person_outline, 'C', 2),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      _buildNavitem(Iconsax.shopping_cart, 'D', 3),
+                      Positioned(
+                        right: -7,
+                        top: 16,
+                        child: CircleAvatar(
+                          radius: 10,
+                          backgroundColor: red,
+                          child: Text(
+                            '0',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-                Positioned(
-                  right: 155,
-                  top: -27,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.red,
-                    radius: 35,
-                    child: Icon(
-                      CupertinoIcons.search,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+          // Floating search button
+          Positioned(
+            bottom: 40,
+            left: MediaQuery.of(context).size.width / 2 - 35,
+            child: GestureDetector(
+              onTap: () {
+                // Optional search action
+              },
+              child: CircleAvatar(
+                backgroundColor: Colors.red,
+                radius: 35,
+                child: Icon(
+                  CupertinoIcons.search,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  // helper methood to build navigation bar items
   Widget _buildNavitem(IconData icon, String label, int index) {
     return InkWell(
       onTap: () {
@@ -92,6 +103,7 @@ class _AppMainScreenState extends State<AppMainScreen> {
         });
       },
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             icon,
