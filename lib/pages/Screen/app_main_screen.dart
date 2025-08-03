@@ -55,6 +55,7 @@ class _AppMainScreenState extends State<AppMainScreen> {
                         child: CircleAvatar(
                           radius: 10,
                           backgroundColor: red,
+
                           child: Text(
                             '0',
                             style: TextStyle(
