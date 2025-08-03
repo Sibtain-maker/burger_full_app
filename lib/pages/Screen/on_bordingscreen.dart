@@ -1,5 +1,6 @@
 import 'package:burger_app_full/Core/models/on_bording_model.dart';
 import 'package:burger_app_full/pages/Screen/Profile_screen.dart';
+import 'package:burger_app_full/pages/Screen/app_main_screen.dart';
 import 'package:burger_app_full/pages/Screen/foood_app_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:burger_app_full/Core/Utils/const.dart';
@@ -133,7 +134,7 @@ class _OnboardingState extends State<Onboarding> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => FooodAppHomeScreen(),
+                            builder: (context) => AppMainScreen(),
                           ),
                         );
                       },
