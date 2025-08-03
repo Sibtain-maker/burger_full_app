@@ -10,6 +10,6 @@ class FooodAppHomeScreen extends StatefulWidget {
 class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold();
   }
 }
