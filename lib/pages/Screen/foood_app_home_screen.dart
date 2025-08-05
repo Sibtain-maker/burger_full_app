@@ -58,7 +58,10 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
         ],
       ),
       backgroundColor: Colors.white,
-      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: []),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [Text('')],
+      ),
     );
   }
 }
