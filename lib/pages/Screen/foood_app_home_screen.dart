@@ -71,6 +71,49 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
             ),
           ),
           _buildCatogariesList(),
+          SizedBox(height: 20), // 👈 Added space after categories
+          viewAll(),
+          SizedBox(height: 20),
+          _buildproductsection(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildproductsection() {
+    return SizedBox();
+  }
+
+  Padding viewAll() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Popular Now',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          GestureDetector(
+            child: Row(
+              children: [
+                Text('View All', style: TextStyle(color: Colors.orange)),
+                SizedBox(width: 5),
+                Container(
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: Colors.white,
+                    size: 10,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -99,9 +142,7 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
                 padding: EdgeInsets.only(left: index == 0 ? 16 : 0, right: 12),
                 child: GestureDetector(
                   onTap: () {
-                    setState(() {
-                      selectedCategory = category.name;
-                    });
+                    handleCategorySelection(category.name);
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -139,6 +180,13 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
         );
       },
     );
+  }
+
+  void handleCategorySelection(String category) {
+    if (selectedCategory == category) return;
+    setState(() {
+      selectedCategory = category;
+    });
   }
 
   Padding banner() {
