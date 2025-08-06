@@ -3,6 +3,7 @@ import 'package:burger_app_full/Core/models/categories_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FooodAppHomeScreen extends StatefulWidget {
   const FooodAppHomeScreen({super.key});
@@ -13,8 +14,41 @@ class FooodAppHomeScreen extends StatefulWidget {
 
 class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
   late Future<List<CategoryModel>> futureCategories = fetchCategories();
+  List<CategoryModel> categories = [];
+  String? selectedCategory;
+  @override
+  void initState() {
+    super.initState();
+    _initializedata();
+  }
+
+  void _initializedata() async {
+    try {
+      final categories = await futureCategories;
+      if (categories.isNotEmpty) {
+        setState(() {
+          this.categories = categories;
+          selectedCategory =
+              categories.first.name; // Set the first category as selected
+        });
+      }
+    } catch (error) {
+      print('Error initializing data: $error');
+    }
+  }
+
   Future<List<CategoryModel>> fetchCategories() async {
-    return [];
+    try {
+      final response = await Supabase.instance.client
+          .from('Category_items')
+          .select();
+      return (response as List)
+          .map((json) => CategoryModel.fromJson(json))
+          .toList();
+    } catch (error) {
+      print('Error fetching categories: $error');
+      return [];
+    }
   }
 
   @override
@@ -29,18 +63,82 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
           // 👇 Added horizontal padding here
           banner(),
           SizedBox(height: 20), // 👈 Added space after the banner
-          Text(
-            'Categories',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          Padding(
+            padding: const EdgeInsets.all(17),
+            child: Text(
+              'Categories',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ),
+          _buildCatogariesList(),
         ],
       ),
-      _buildCatogariesList,
     );
   }
 
   Widget _buildCatogariesList() {
-    return SizedBox();
+    return FutureBuilder(
+      future: futureCategories,
+
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+          return SizedBox.shrink();
+        }
+        return SizedBox(
+          height: 60,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: BouncingScrollPhysics(),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              return Padding(
+                padding: EdgeInsets.only(left: index == 0 ? 16 : 0, right: 12),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedCategory = category.name;
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: selectedCategory == category.name
+                          ? Colors.red.withOpacity(0.1)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: selectedCategory == category.name
+                            ? Colors.red
+                            : Colors.grey.withOpacity(0.5),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Image.network(category.image, height: 30, width: 30),
+                        SizedBox(width: 8),
+                        Text(
+                          category.name,
+                          style: TextStyle(
+                            color: selectedCategory == category.name
+                                ? Colors.red
+                                : Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 
   Padding banner() {
