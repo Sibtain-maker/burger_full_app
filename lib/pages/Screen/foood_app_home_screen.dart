@@ -1,6 +1,7 @@
 import 'package:burger_app_full/Core/Utils/const.dart';
 import 'package:burger_app_full/Core/models/categories_model.dart';
 import 'package:burger_app_full/Core/models/product_model.dart';
+import 'package:burger_app_full/widgets/products_items_dispaly.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -46,7 +47,7 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
       final response = await Supabase.instance.client
           .from('food_products')
           .select()
-          .eq('category', category);
+          .ilike('category', category.trim()); // Case-insensitive match
       return (response as List)
           .map((json) => FoodModel.fromJson(json))
           .toList();
@@ -115,59 +116,19 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
           if (products.isEmpty) {
             return Center(child: Text('No products Found'));
           }
-          return SizedBox(
-            height: 60,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(),
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                final category = categories[index];
-                return Padding(
-                  padding: EdgeInsets.only(
-                    left: index == 0 ? 16 : 0,
-                    right: 12,
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      handleCategorySelection(category.name);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: selectedCategory == category.name
-                            ? Colors.red.withOpacity(0.1)
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(
-                          color: selectedCategory == category.name
-                              ? Colors.red
-                              : Colors.grey.withOpacity(0.5),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Image.network(category.image, height: 30, width: 30),
-                          SizedBox(width: 8),
-                          Text(
-                            category.name,
-                            style: TextStyle(
-                              color: selectedCategory == category.name
-                                  ? Colors.red
-                                  : Colors.black,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.only(
+                  left: index == 0 ? 25 : 0,
+                  right: index == products.length - 1 ? 25 : 0,
+                ),
+                child: ProductsItemsDispaly(foodModel: products[index]),
+              );
+            },
           );
         },
       ),
