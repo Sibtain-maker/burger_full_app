@@ -1,5 +1,6 @@
 import 'package:burger_app_full/Core/Utils/const.dart';
 import 'package:burger_app_full/Core/models/categories_model.dart';
+import 'package:burger_app_full/Core/models/product_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -14,6 +15,7 @@ class FooodAppHomeScreen extends StatefulWidget {
 
 class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
   late Future<List<CategoryModel>> futureCategories = fetchCategories();
+  late Future<List<FoodModel>> futureFoodproducts = Future.value([]);
   List<CategoryModel> categories = [];
   String? selectedCategory;
   @override
@@ -30,10 +32,27 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
           this.categories = categories;
           selectedCategory =
               categories.first.name; // Set the first category as selected
+          futureFoodproducts = fetchfoodproducts(selectedCategory!);
         });
       }
     } catch (error) {
       print('Error initializing data: $error');
+    }
+  }
+
+  // Fetch Food products
+  Future<List<FoodModel>> fetchfoodproducts(String category) async {
+    try {
+      final response = await Supabase.instance.client
+          .from('food_products')
+          .select()
+          .eq('category', category);
+      return (response as List)
+          .map((json) => FoodModel.fromJson(json))
+          .toList();
+    } catch (error) {
+      print('Error fetching products: $error');
+      return [];
     }
   }
 
@@ -81,7 +100,78 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
   }
 
   Widget _buildproductsection() {
-    return SizedBox();
+    return Expanded(
+      child: FutureBuilder<List<FoodModel>>(
+        future: futureFoodproducts,
+
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error : ${snapshot.error}'));
+          }
+          final products = snapshot.data ?? [];
+          if (products.isEmpty) {
+            return Center(child: Text('No products Found'));
+          }
+          return SizedBox(
+            height: 60,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              physics: BouncingScrollPhysics(),
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                final category = categories[index];
+                return Padding(
+                  padding: EdgeInsets.only(
+                    left: index == 0 ? 16 : 0,
+                    right: 12,
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      handleCategorySelection(category.name);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: selectedCategory == category.name
+                            ? Colors.red.withOpacity(0.1)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: selectedCategory == category.name
+                              ? Colors.red
+                              : Colors.grey.withOpacity(0.5),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Image.network(category.image, height: 30, width: 30),
+                          SizedBox(width: 8),
+                          Text(
+                            category.name,
+                            style: TextStyle(
+                              color: selectedCategory == category.name
+                                  ? Colors.red
+                                  : Colors.black,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Padding viewAll() {
@@ -186,6 +276,7 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
     if (selectedCategory == category) return;
     setState(() {
       selectedCategory = category;
+      futureFoodproducts = fetchfoodproducts(category);
     });
   }
 
