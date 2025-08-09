@@ -13,7 +13,7 @@ class Onboarding extends StatefulWidget {
 }
 
 class _OnboardingState extends State<Onboarding> {
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   int currentPage = 0;
 
   @override

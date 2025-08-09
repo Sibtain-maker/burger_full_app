@@ -12,21 +12,18 @@ class ProductsItemsDispaly extends StatefulWidget {
 class _ProductsItemsDispalyState extends State<ProductsItemsDispaly> {
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {},
       child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10),
-        width: size.width * 0.45,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.07),
-              spreadRadius: 2,
-              blurRadius: 16,
-              offset: Offset(0, 8),
+              color: Colors.black.withValues(alpha: 0.07),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: Offset(0, 4),
             ),
           ],
         ),
@@ -34,33 +31,63 @@ class _ProductsItemsDispalyState extends State<ProductsItemsDispaly> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 16),
-            Image.network(
-              widget.foodModel.imageCard,
-              height: 90,
-              width: 110,
-              fit: BoxFit.contain,
-            ),
             SizedBox(height: 12),
-            Text(
-              widget.foodModel.name,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+            // Add flame icon for hot items
+            Stack(
+              children: [
+                Image.network(
+                  widget.foodModel.imageCard,
+                  height: 90,
+                  width: 110,
+                  fit: BoxFit.contain,
+                ),
+                Positioned(
+                  top: 0,
+                  right: 8,
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.local_fire_department,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                widget.foodModel.name,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              textAlign: TextAlign.center,
             ),
             SizedBox(height: 4),
-            Text(
-              widget.foodModel.specialItems,
-              style: TextStyle(
-                fontSize: 15,
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0.5,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                widget.foodModel.specialItems,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              textAlign: TextAlign.center,
             ),
             SizedBox(height: 12),
             RichText(
@@ -69,11 +96,11 @@ class _ProductsItemsDispalyState extends State<ProductsItemsDispaly> {
                 children: [
                   TextSpan(
                     text: '\$',
-                    style: TextStyle(fontSize: 16, color: Colors.red),
+                    style: TextStyle(fontSize: 16, color: Colors.orange),
                   ),
                   TextSpan(
                     text: ' ${widget.foodModel.price.toStringAsFixed(2)}',
-                    style: TextStyle(fontSize: 24, color: Colors.black),
+                    style: TextStyle(fontSize: 22, color: Colors.orange),
                   ),
                 ],
               ),

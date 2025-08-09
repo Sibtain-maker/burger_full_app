@@ -1,8 +1,5 @@
 import 'package:burger_app_full/pages/Screen/app_main_screen.dart';
-import 'package:burger_app_full/pages/Screen/Profile_screen.dart';
-import 'package:burger_app_full/pages/Screen/on_bordingscreen.dart';
 import 'package:burger_app_full/pages/auth/login_screen.dart';
-import 'package:burger_app_full/pages/auth/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

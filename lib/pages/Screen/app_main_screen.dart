@@ -14,7 +14,7 @@ class AppMainScreen extends StatefulWidget {
 
 class _AppMainScreenState extends State<AppMainScreen> {
   int currentIndex = 0;
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
   int currentPage = 0;
 
   final List<Widget> _pages = [

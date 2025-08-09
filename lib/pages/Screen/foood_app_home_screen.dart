@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:burger_app_full/pages/Screen/view_all_screen.dart';
 
 class FooodAppHomeScreen extends StatefulWidget {
   const FooodAppHomeScreen({super.key});
@@ -101,10 +102,10 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
   }
 
   Widget _buildproductsection() {
-    return Expanded(
+    return Container(
+      height: 300, // Increased height for bigger burgers
       child: FutureBuilder<List<FoodModel>>(
         future: futureFoodproducts,
-
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -118,14 +119,13 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
           }
           return ListView.builder(
             scrollDirection: Axis.horizontal,
-
+            physics: BouncingScrollPhysics(),
+            padding: EdgeInsets.symmetric(horizontal: 20),
             itemCount: products.length,
             itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.only(
-                  left: index == 0 ? 25 : 0,
-                  right: index == products.length - 1 ? 25 : 0,
-                ),
+              return Container(
+                margin: EdgeInsets.only(right: 20),
+                width: 180, // Bigger width for burger cards
                 child: ProductsItemsDispaly(foodModel: products[index]),
               );
             },
@@ -143,23 +143,40 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
         children: [
           Text(
             'Popular Now',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ViewAllScreen()),
+              );
+            },
             child: Row(
               children: [
-                Text('View All', style: TextStyle(color: Colors.orange)),
-                SizedBox(width: 5),
+                Text(
+                  'View All',
+                  style: TextStyle(
+                    color: Colors.orange,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                ),
+                SizedBox(width: 4),
                 Container(
-                  padding: EdgeInsets.all(5),
+                  padding: EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     color: Colors.orange,
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   child: Icon(
                     Icons.arrow_forward_ios_rounded,
                     color: Colors.white,
-                    size: 10,
+                    size: 12,
                   ),
                 ),
               ],
@@ -336,7 +353,7 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 16),
-          child: Container(
+          child: SizedBox(
             height: 45,
             width: 45,
             child: Image.asset('assets/food-delivery/profile.png'),
