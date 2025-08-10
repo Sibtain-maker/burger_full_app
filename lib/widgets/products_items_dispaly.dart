@@ -1,4 +1,5 @@
 import 'package:burger_app_full/Core/models/product_model.dart';
+import 'package:burger_app_full/pages/Screen/Food_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class ProductsItemsDispaly extends StatefulWidget {
@@ -13,7 +14,14 @@ class _ProductsItemsDispalyState extends State<ProductsItemsDispaly> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => FoodDetailScreen(foodModel: widget.foodModel),
+          ),
+        );
+      },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
