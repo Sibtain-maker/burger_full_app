@@ -104,8 +104,16 @@ class FoodModel {
   });
 
   factory FoodModel.fromJson(Map<String, dynamic> json) {
+    // Generate a unique ID if missing or empty
+    String productId = json['id']?.toString() ?? "";
+    if (productId.isEmpty) {
+      productId = '${json['name']?.toString().toLowerCase().replaceAll(' ', '_') ?? 'unknown'}_${DateTime.now().millisecondsSinceEpoch}';
+    }
+    
+    print('FoodModel.fromJson: Creating product with ID: $productId, Name: ${json['name']}');
+    
     return FoodModel(
-      id: json['id'] ?? "",
+      id: productId,
       imageCard: json['imageCard'] ?? "",
       imageDetail: json['imageDetail'] ?? "",
       name: json['name'] ?? 'Unknown',
@@ -113,8 +121,8 @@ class FoodModel {
       rate: (json['rate'] as num?)?.toDouble() ?? 0.0,
       specialItems: json['specialItems'] ?? '',
       category: json['category'] ?? '',
-      kcal: json['kcal'] ?? '',
-      time: json['time']??''
+      kcal: json['kcal'] ?? 0,
+      time: json['time'] ?? ''
     );
   }
    Map<String, dynamic> toMap() {

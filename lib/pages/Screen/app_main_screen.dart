@@ -1,6 +1,8 @@
 import 'package:burger_app_full/Core/Utils/const.dart';
 import 'package:burger_app_full/pages/Screen/Profile_screen.dart';
 import 'package:burger_app_full/pages/Screen/foood_app_home_screen.dart';
+import 'package:burger_app_full/pages/Screen/cart_screen.dart';
+import 'package:burger_app_full/service/cart_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -16,13 +18,20 @@ class _AppMainScreenState extends State<AppMainScreen> {
   int currentIndex = 0;
   final PageController _pageController = PageController();
   int currentPage = 0;
+  final CartService cartService = CartService();
 
   final List<Widget> _pages = [
     FooodAppHomeScreen(),
     Scaffold(), // Heart page
     ProfileScreen(),
-    Scaffold(), // Cart page
+    CartScreen(), // Cart page
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    cartService.initializeCart();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,22 +58,29 @@ class _AppMainScreenState extends State<AppMainScreen> {
                     clipBehavior: Clip.none,
                     children: [
                       _buildNavitem(Iconsax.shopping_cart, 'D', 3),
-                      Positioned(
-                        right: -7,
-                        top: 16,
-                        child: CircleAvatar(
-                          radius: 10,
-                          backgroundColor: red,
-
-                          child: Text(
-                            '0',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                      ListenableBuilder(
+                        listenable: cartService,
+                        builder: (context, child) {
+                          if (cartService.itemCount > 0) {
+                            return Positioned(
+                              right: -7,
+                              top: 16,
+                              child: CircleAvatar(
+                                radius: 10,
+                                backgroundColor: red,
+                                child: Text(
+                                  '${cartService.itemCount}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                          return SizedBox.shrink();
+                        },
                       ),
                     ],
                   ),

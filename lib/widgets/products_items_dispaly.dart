@@ -1,6 +1,9 @@
 import 'package:burger_app_full/Core/models/product_model.dart';
+import 'package:burger_app_full/Core/Utils/const.dart';
 import 'package:burger_app_full/pages/Screen/Food_detail_screen.dart';
+import 'package:burger_app_full/service/cart_service.dart';
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 
 class ProductsItemsDispaly extends StatefulWidget {
   final FoodModel foodModel;
@@ -11,6 +14,9 @@ class ProductsItemsDispaly extends StatefulWidget {
 }
 
 class _ProductsItemsDispalyState extends State<ProductsItemsDispaly> {
+  final CartService cartService = CartService();
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -113,10 +119,98 @@ class _ProductsItemsDispalyState extends State<ProductsItemsDispaly> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 8),
+            // Add to cart button
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: SizedBox(
+                width: double.infinity,
+                height: 36,
+                child: ElevatedButton(
+                  onPressed: isLoading ? null : _addToCart,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: red,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                  ),
+                  child: isLoading
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Iconsax.shopping_cart, size: 16),
+                            SizedBox(width: 6),
+                            Text(
+                              'Add to Cart',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+              ),
+            ),
+            SizedBox(height: 12),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _addToCart() async {
+    setState(() => isLoading = true);
+    
+    try {
+      final success = await cartService.addToCart(
+        product: widget.foodModel,
+        quantity: 1,
+      );
+      
+      if (success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Iconsax.tick_circle, color: Colors.white),
+                SizedBox(width: 8),
+                Text('${widget.foodModel.name} added to cart!'),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add item to cart'),
+            backgroundColor: red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
   }
 }

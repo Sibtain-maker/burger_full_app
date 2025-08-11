@@ -49,9 +49,15 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
           .from('food_products')
           .select()
           .ilike('category', category.trim()); // Case-insensitive match
-      return (response as List)
-          .map((json) => FoodModel.fromJson(json))
+      final products = (response as List)
+          .map((json) {
+            print('Supabase product data: $json'); // Debug print
+            final product = FoodModel.fromJson(json);
+            print('Created product: ID=${product.id}, Name=${product.name}'); // Debug print
+            return product;
+          })
           .toList();
+      return products;
     } catch (error) {
       print('Error fetching products: $error');
       return [];
