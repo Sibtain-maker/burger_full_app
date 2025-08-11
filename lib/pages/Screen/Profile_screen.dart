@@ -82,7 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: isLoading
           ? Center(child: CircularProgressIndicator(color: red))
           : SingleChildScrollView(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 120), // Extra bottom padding to clear nav bar
               child: Column(
                 children: [
                   _buildProfileHeader(),
@@ -96,7 +96,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildSupportSection(),
                   SizedBox(height: 30),
                   _buildLogoutButton(),
-                  SizedBox(height: 20),
                 ],
               ),
             ),
