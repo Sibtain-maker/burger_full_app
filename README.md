@@ -1,18 +1,20 @@
-
-<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-08-13 at 01 11 14" src="https://github.com/user-attachments/assets/a2c57fc4-536c-48ef-8f27-2d65ef072b9e" />
-<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-08-13 at 01 10 41" src="https://github.com/user-attachments/assets/b3e3e82b-b6fc-4c6c-b699-3ae9079fa908" />
-<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-08-13 at 01 10 19" src="https://github.com/user-attachments/assets/cb2f9c29-7d36-41c3-a46b-564356923e43" />
-<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-08-13 at 01 09 52" src="https://github.com/user-attachments/assets/1fcff265-46c8-4be7-b584-c7e945614e30" />
-<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-08-13 at 01 09 30" src="https://github.com/user-attachments/assets/9911187e-8463-461c-ad92-976460d35a6c" />
-<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-08-13 at 01 09 20" src="https://github.com/user-attachments/assets/d61e0576-1bab-4278-8037-8c9918c0babe" />
-<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-08-13 at 01 09 09" src="https://github.com/user-attachments/assets/cd995070-9f74-45a1-b861-30d4d7bee187" />
-<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-08-13 at 01 08 57" src="https://github.com/user-attachments/assets/3d50da68-d63a-438a-951e-3f8e8a1cc9bb" />
-<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-08-13 at 01 11 54" src="https://github.com/user-attachments/assets/102a9e6d-0dd9-4404-b38f-98f36d025cac" />
-<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 16 Pro - 2025-08-13 at 01 11 33" src="https://github.com/user-attachments/assets/d4ad5096-f0c8-49f0-9196-3b8bfee70e7e" />
 🍕 Food Delivery App
 A modern, user-friendly mobile application for food ordering and delivery, built with a focus on speed, convenience, and exceptional user experience.
 📱 App Overview
 "The Fastest in Delivery Food" - Our app connects hungry customers with their favorite meals, offering quick delivery and a seamless ordering experience.
+📸 Screenshots
+<div align="center">
+🏠 Home & Navigation
+<img src="https://github.com/user-attachments/assets/cd995070-9f74-45a1-b861-30d4d7bee187" alt="Home Screen" width="250"> <img src="https://github.com/user-attachments/assets/3d50da68-d63a-438a-951e-3f8e8a1cc9bb" alt="All Products" width="250">
+🍔 Product Details
+<img src="https://github.com/user-attachments/assets/a2c57fc4-536c-48ef-8f27-2d65ef072b9e" alt="Pizza Details" width="250"> <img src="https://github.com/user-attachments/assets/b3e3e82b-b6fc-4c6c-b699-3ae9079fa908" alt="Burger Details" width="250">
+🎯 Onboarding & Authentication
+<img src="https://github.com/user-attachments/assets/cb2f9c29-7d36-41c3-a46b-564356923e43" alt="Onboarding Screen" width="250"> <img src="https://github.com/user-attachments/assets/1fcff265-46c8-4be7-b584-c7e945614e30" alt="Sign Up" width="250"> <img src="https://github.com/user-attachments/assets/9911187e-8463-461c-ad92-976460d35a6c" alt="Login Screen" width="250">
+❤️ Favorites & Profile
+<img src="https://github.com/user-attachments/assets/d61e0576-1bab-4278-8037-8c9918c0babe" alt="Favorites" width="250"> <img src="https://github.com/user-attachments/assets/102a9e6d-0dd9-4404-b38f-98f36d025cac" alt="User Profile" width="250">
+🛒 Shopping Cart
+<img src="https://github.com/user-attachments/assets/d4ad5096-f0c8-49f0-9196-3b8bfee70e7e" alt="Shopping Cart" width="250">
+</div>
 ✨ Key Features
 🔐 Authentication System
 
@@ -138,12 +140,10 @@ Back Navigation: Consistent back button implementation
 🚀 Getting Started
 Prerequisites
 
-Mobile device (iOS)
+Mobile device (iOS/Android)
 Internet connection
 Valid email address for registration
 
-📍 Service Area
-Currently serving Lahore, Pakistan with plans for expansion to other cities.
 🔧 Development
 Built With
 
@@ -166,3 +166,12 @@ For support, feature requests, or business inquiries, please contact:
 
 Email: msibtain1236@gmail.com
 Phone: 03028468463
+
+🎯 Future Enhancements
+
+Order tracking and delivery status updates
+Multiple payment methods integration
+Restaurant partner dashboard
+Advanced search and filtering options
+Loyalty program and rewards system
+Multi-city expansion
