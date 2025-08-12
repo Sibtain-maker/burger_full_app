@@ -133,14 +133,22 @@ class ProfileService {
   Future<List<String>> getUserFavorites() async {
     try {
       final user = supabase.auth.currentUser;
-      if (user == null) return [];
+      if (user == null) {
+        print('Error fetching favorites: No authenticated user');
+        return [];
+      }
 
+      print('Fetching favorites for user: ${user.id}');
+      
       final response = await supabase
           .from('user_favorites')
           .select('product_id')
           .eq('user_id', user.id);
 
-      return (response as List).map((item) => item['product_id'] as String).toList();
+      final favorites = (response as List).map((item) => item['product_id'] as String).toList();
+      print('Found ${favorites.length} favorites: $favorites');
+      
+      return favorites;
     } catch (e) {
       print('Error fetching favorites: $e');
       return [];
@@ -151,14 +159,20 @@ class ProfileService {
   Future<bool> addToFavorites(String productId) async {
     try {
       final user = supabase.auth.currentUser;
-      if (user == null) return false;
+      if (user == null) {
+        print('Error adding to favorites: No authenticated user');
+        return false;
+      }
 
+      print('Adding to favorites - User: ${user.id}, Product: $productId');
+      
       await supabase.from('user_favorites').insert({
         'user_id': user.id,
         'product_id': productId,
         'created_at': DateTime.now().toIso8601String(),
       });
 
+      print('Successfully added to favorites: $productId');
       return true;
     } catch (e) {
       print('Error adding to favorites: $e');
@@ -170,14 +184,20 @@ class ProfileService {
   Future<bool> removeFromFavorites(String productId) async {
     try {
       final user = supabase.auth.currentUser;
-      if (user == null) return false;
+      if (user == null) {
+        print('Error removing from favorites: No authenticated user');
+        return false;
+      }
 
+      print('Removing from favorites - User: ${user.id}, Product: $productId');
+      
       await supabase
           .from('user_favorites')
           .delete()
           .eq('user_id', user.id)
           .eq('product_id', productId);
 
+      print('Successfully removed from favorites: $productId');
       return true;
     } catch (e) {
       print('Error removing from favorites: $e');

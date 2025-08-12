@@ -104,10 +104,11 @@ class FoodModel {
   });
 
   factory FoodModel.fromJson(Map<String, dynamic> json) {
-    // Generate a unique ID if missing or empty
+    // Use database ID if available, otherwise generate a consistent ID based on name
     String productId = json['id']?.toString() ?? "";
     if (productId.isEmpty) {
-      productId = '${json['name']?.toString().toLowerCase().replaceAll(' ', '_') ?? 'unknown'}_${DateTime.now().millisecondsSinceEpoch}';
+      // Create a consistent ID based on name (without timestamp)
+      productId = json['name']?.toString().toLowerCase().replaceAll(' ', '_') ?? 'unknown';
     }
     
     print('FoodModel.fromJson: Creating product with ID: $productId, Name: ${json['name']}');

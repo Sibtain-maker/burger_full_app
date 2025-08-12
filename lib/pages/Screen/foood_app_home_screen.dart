@@ -1,8 +1,10 @@
 import 'package:burger_app_full/Core/Utils/const.dart';
 import 'package:burger_app_full/Core/models/categories_model.dart';
 import 'package:burger_app_full/Core/models/product_model.dart';
+import 'package:burger_app_full/Core/models/user_profile_model.dart';
+import 'package:burger_app_full/service/profile_service.dart';
 import 'package:burger_app_full/widgets/products_items_dispaly.dart';
-import 'package:flutter/foundation.dart';
+import 'package:burger_app_full/widgets/smart_image.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,10 +22,13 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
   late Future<List<FoodModel>> futureFoodproducts = Future.value([]);
   List<CategoryModel> categories = [];
   String? selectedCategory;
+  final ProfileService _profileService = ProfileService();
+  UserProfileModel? userProfile;
   @override
   void initState() {
     super.initState();
     _initializedata();
+    _loadUserProfile();
   }
 
   void _initializedata() async {
@@ -39,6 +44,19 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
       }
     } catch (error) {
       print('Error initializing data: $error');
+    }
+  }
+
+  void _loadUserProfile() async {
+    try {
+      final profile = await _profileService.getCurrentUserProfile();
+      if (profile != null) {
+        setState(() {
+          userProfile = profile;
+        });
+      }
+    } catch (error) {
+      print('Error loading user profile: $error');
     }
   }
 
@@ -233,7 +251,11 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
                     ),
                     child: Row(
                       children: [
-                        Image.network(category.image, height: 30, width: 30),
+                        SmartImage(
+                          imagePath: category.image,
+                          height: 30,
+                          width: 30,
+                        ),
                         SizedBox(width: 8),
                         Text(
                           category.name,
@@ -322,6 +344,18 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
   }
 
   AppBar AppBarparts() {
+    String locationText = 'Kathmandu, Nepal'; // Default fallback
+    
+    if (userProfile != null) {
+      if (userProfile!.city != null && userProfile!.country != null) {
+        locationText = '${userProfile!.city}, ${userProfile!.country}';
+      } else if (userProfile!.city != null) {
+        locationText = userProfile!.city!;
+      } else if (userProfile!.address != null && userProfile!.address!.isNotEmpty) {
+        locationText = userProfile!.address!;
+      }
+    }
+    
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
@@ -338,11 +372,11 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
       centerTitle: true,
       title: Row(
         mainAxisSize: MainAxisSize.min,
-        children: const [
+        children: [
           Icon(Iconsax.location, color: Colors.red, size: 18),
           SizedBox(width: 4),
           Text(
-            'Kathmandu, Nepal', // 🔄 Updated title text
+            locationText,
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w600,

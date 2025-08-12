@@ -24,24 +24,26 @@ class CartService extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final cartData = prefs.getString('cart');
-      
+
       print('CartService: Initializing cart, stored data: $cartData');
-      
+
       if (cartData != null) {
         final cartJson = json.decode(cartData);
         final items = (cartJson['items'] as List)
             .map((item) => CartItem.fromJson(item))
             .toList();
-        
+
         print('CartService: Loaded ${items.length} items from storage');
-        
+
         _cart = Cart(
           items: items,
           promoCode: cartJson['promoCode'] ?? '',
           promoDiscount: (cartJson['promoDiscount'] ?? 0.0).toDouble(),
         );
       } else {
-        print('CartService: No cart data found in storage, starting with empty cart');
+        print(
+          'CartService: No cart data found in storage, starting with empty cart',
+        );
       }
       _clearError();
     } catch (e) {
@@ -79,15 +81,18 @@ class CartService extends ChangeNotifier {
   }) async {
     try {
       _setLoading(true);
-      
+
       // Check if item already exists in cart
       // Always create a unique ID for different products or addon combinations
       final existingItemIndex = _cart.items.indexWhere(
-        (item) => item.product.id == product.id && 
-                 listEquals(item.selectedAddons, selectedAddons),
+        (item) =>
+            item.product.id == product.id &&
+            listEquals(item.selectedAddons, selectedAddons),
       );
 
-      print('CartService: Adding ${product.name}, existing index: $existingItemIndex');
+      print(
+        'CartService: Adding ${product.name}, existing index: $existingItemIndex',
+      );
 
       if (existingItemIndex != -1) {
         // Update quantity of existing item
@@ -95,12 +100,14 @@ class CartService extends ChangeNotifier {
         final updatedItem = existingItem.copyWith(
           quantity: existingItem.quantity + quantity,
         );
-        
+
         final updatedItems = List<CartItem>.from(_cart.items);
         updatedItems[existingItemIndex] = updatedItem;
-        
+
         _cart = _cart.copyWith(items: updatedItems);
-        print('CartService: Updated existing item, new quantity: ${updatedItem.quantity}');
+        print(
+          'CartService: Updated existing item, new quantity: ${updatedItem.quantity}',
+        );
       } else {
         // Add new item - use a more unique ID
         final cartItem = CartItem(
@@ -111,9 +118,11 @@ class CartService extends ChangeNotifier {
           specialInstructions: specialInstructions,
           addedAt: DateTime.now(),
         );
-        
+
         _cart = _cart.copyWith(items: [..._cart.items, cartItem]);
-        print('CartService: Added new item: ${cartItem.id}, total items: ${_cart.items.length}');
+        print(
+          'CartService: Added new item: ${cartItem.id}, total items: ${_cart.items.length}',
+        );
       }
 
       await _saveCart();
@@ -132,10 +141,12 @@ class CartService extends ChangeNotifier {
   Future<bool> removeFromCart(String itemId) async {
     try {
       _setLoading(true);
-      
-      final updatedItems = _cart.items.where((item) => item.id != itemId).toList();
+
+      final updatedItems = _cart.items
+          .where((item) => item.id != itemId)
+          .toList();
       _cart = _cart.copyWith(items: updatedItems);
-      
+
       await _saveCart();
       _clearError();
       notifyListeners();
@@ -152,7 +163,7 @@ class CartService extends ChangeNotifier {
   Future<bool> updateQuantity(String itemId, int quantity) async {
     try {
       _setLoading(true);
-      
+
       if (quantity <= 0) {
         return await removeFromCart(itemId);
       }
@@ -163,9 +174,9 @@ class CartService extends ChangeNotifier {
       final updatedItem = _cart.items[itemIndex].copyWith(quantity: quantity);
       final updatedItems = List<CartItem>.from(_cart.items);
       updatedItems[itemIndex] = updatedItem;
-      
+
       _cart = _cart.copyWith(items: updatedItems);
-      
+
       await _saveCart();
       _clearError();
       notifyListeners();
@@ -182,9 +193,9 @@ class CartService extends ChangeNotifier {
   Future<bool> clearCart() async {
     try {
       _setLoading(true);
-      
+
       _cart = Cart();
-      
+
       await _saveCart();
       _clearError();
       notifyListeners();
@@ -201,7 +212,7 @@ class CartService extends ChangeNotifier {
   Future<bool> applyPromoCode(String code) async {
     try {
       _setLoading(true);
-      
+
       // Mock promo code validation
       double discount = 0.0;
       switch (code.toUpperCase()) {
@@ -221,12 +232,12 @@ class CartService extends ChangeNotifier {
           _setError('Invalid promo code');
           return false;
       }
-      
+
       _cart = _cart.copyWith(
         promoCode: code.toUpperCase(),
         promoDiscount: discount,
       );
-      
+
       await _saveCart();
       _clearError();
       notifyListeners();
@@ -243,12 +254,9 @@ class CartService extends ChangeNotifier {
   Future<bool> removePromoCode() async {
     try {
       _setLoading(true);
-      
-      _cart = _cart.copyWith(
-        promoCode: '',
-        promoDiscount: 0.0,
-      );
-      
+
+      _cart = _cart.copyWith(promoCode: '', promoDiscount: 0.0);
+
       await _saveCart();
       _clearError();
       notifyListeners();
@@ -303,10 +311,10 @@ class CartService extends ChangeNotifier {
   }) async {
     try {
       _setLoading(true);
-      
+
       // Simulate API call delay
       await Future.delayed(Duration(seconds: 2));
-      
+
       // Mock successful checkout
       final orderId = 'ORD${DateTime.now().millisecondsSinceEpoch}';
       final orderData = {
@@ -317,12 +325,14 @@ class CartService extends ChangeNotifier {
         'paymentMethod': paymentMethod,
         'specialInstructions': specialInstructions,
         'orderTime': DateTime.now().toIso8601String(),
-        'estimatedDelivery': DateTime.now().add(Duration(minutes: 30)).toIso8601String(),
+        'estimatedDelivery': DateTime.now()
+            .add(Duration(minutes: 30))
+            .toIso8601String(),
       };
-      
+
       // Clear cart after successful checkout
       await clearCart();
-      
+
       return {'success': true, 'order': orderData};
     } catch (e) {
       _setError('Checkout failed: $e');

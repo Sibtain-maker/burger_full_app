@@ -1,10 +1,9 @@
 import 'package:burger_app_full/Core/Utils/const.dart';
 import 'package:burger_app_full/Core/models/product_model.dart';
-import 'package:burger_app_full/service/profile_service.dart';
-import 'package:burger_app_full/widgets/products_items_dispaly.dart';
+import 'package:burger_app_full/service/memory_favorites_service.dart';
+import 'package:burger_app_full/widgets/smart_image.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -14,7 +13,7 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  final ProfileService profileService = ProfileService();
+  final MemoryFavoritesService favoritesService = MemoryFavoritesService();
   List<FoodModel> favoriteProducts = [];
   List<String> favoriteProductIds = [];
   bool isLoading = true;
@@ -26,6 +25,13 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     _loadFavorites();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload favorites when screen becomes visible
+    _loadFavorites();
+  }
+
   Future<void> _loadFavorites() async {
     setState(() {
       isLoading = true;
@@ -33,23 +39,13 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     });
 
     try {
-      // Get user's favorite product IDs
-      favoriteProductIds = await profileService.getUserFavorites();
-      
-      if (favoriteProductIds.isNotEmpty) {
-        // Fetch the actual products
-        final response = await Supabase.instance.client
-            .from('food_products')
-            .select()
-            .inFilter('id', favoriteProductIds);
-        
-        favoriteProducts = (response as List)
-            .map((item) => FoodModel.fromJson(item))
-            .toList();
-      } else {
-        favoriteProducts = [];
-      }
+      // Get favorites from in-memory service
+      favoriteProducts = favoritesService.getFavoriteProducts();
+      favoriteProductIds = favoritesService.getFavoriteIds();
+
+      print('Loaded ${favoriteProducts.length} favorites from memory');
     } catch (e) {
+      print('Error loading favorites: $e');
       error = 'Error loading favorites: $e';
       favoriteProducts = [];
     } finally {
@@ -59,47 +55,20 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     }
   }
 
-  Future<void> _toggleFavorite(FoodModel product) async {
-    final isCurrentlyFavorite = favoriteProductIds.contains(product.id);
-    
-    try {
-      bool success;
-      if (isCurrentlyFavorite) {
-        success = await profileService.removeFromFavorites(product.id);
-      } else {
-        success = await profileService.addToFavorites(product.id);
-      }
+  void _toggleFavorite(FoodModel product) {
+    // Toggle using in-memory service
+    favoritesService.toggleFavorite(product);
 
-      if (success) {
-        setState(() {
-          if (isCurrentlyFavorite) {
-            favoriteProductIds.remove(product.id);
-            favoriteProducts.removeWhere((p) => p.id == product.id);
-          } else {
-            favoriteProductIds.add(product.id);
-            favoriteProducts.add(product);
-          }
-        });
+    // Reload the favorites list
+    _loadFavorites();
 
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                isCurrentlyFavorite 
-                    ? 'Removed from favorites' 
-                    : 'Added to favorites'
-              ),
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error updating favorites: $e')),
-        );
-      }
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Updated favorites'),
+          duration: Duration(seconds: 1),
+        ),
+      );
     }
   }
 
@@ -108,26 +77,42 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     return Scaffold(
       backgroundColor: grey1,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
+        centerTitle: true,
+        automaticallyImplyLeading: false, // Remove back button
         title: Text(
-          'My Favorites',
+          'Favorites',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
           ),
         ),
         actions: [
-          if (favoriteProducts.isNotEmpty)
-            IconButton(
-              icon: Icon(Iconsax.refresh, color: red),
-              onPressed: _loadFavorites,
-            ),
+          // Debug: Add test product button
+          IconButton(
+            icon: Icon(Iconsax.add, color: Colors.blue),
+            onPressed: () {
+              final testProduct = FoodModel(
+                id: 'test_burger',
+                imageCard: 'assets/food-delivery/product/beef_burger.png',
+                imageDetail: 'assets/food-delivery/product/beef_burger1.png',
+                name: 'Test Burger',
+                price: 9.99,
+                rate: 4.5,
+                specialItems: 'Test Special',
+                category: 'Burger',
+                kcal: 500,
+                time: '15 min',
+              );
+              favoritesService.addToFavorites(testProduct);
+              _loadFavorites();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Added test product to favorites')),
+              );
+            },
+          ),
         ],
       ),
       body: _buildBody(),
@@ -144,10 +129,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             SizedBox(height: 16),
             Text(
               'Loading your favorites...',
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 16,
-              ),
+              style: TextStyle(color: Colors.grey[600], fontSize: 16),
             ),
           ],
         ),
@@ -172,11 +154,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Iconsax.warning_2,
-              size: 64,
-              color: Colors.orange,
-            ),
+            Icon(Iconsax.warning_2, size: 64, color: Colors.orange),
             SizedBox(height: 24),
             Text(
               'Oops! Something went wrong',
@@ -190,10 +168,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             SizedBox(height: 12),
             Text(
               error ?? 'Unknown error occurred',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 32),
@@ -229,11 +204,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Iconsax.heart,
-              size: 80,
-              color: Colors.grey[400],
-            ),
+            Icon(Iconsax.heart, size: 80, color: Colors.grey[400]),
             SizedBox(height: 24),
             Text(
               'No Favorites Yet',
@@ -245,30 +216,48 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             ),
             SizedBox(height: 12),
             Text(
-              'Start adding items to your favorites by tapping the heart icon on products you love!',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-              ),
+              'Start adding items to your favorites by tapping the fire icon on products you love!',
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
+            SizedBox(height: 16),
+            // Debug information
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'Debug Info:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text('Favorites count: ${favoritesService.favoritesCount}'),
+                  Text('Favorite IDs: ${favoritesService.getFavoriteIds()}'),
+                ],
+              ),
+            ),
             SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: red,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              decoration: BoxDecoration(
+                color: red.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Iconsax.shop),
+                  Icon(Iconsax.shop, color: red),
                   SizedBox(width: 8),
-                  Text('Browse Products'),
+                  Text(
+                    'Use Home tab to browse products',
+                    style: TextStyle(
+                      color: red,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -282,170 +271,103 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     return RefreshIndicator(
       color: red,
       onRefresh: _loadFavorites,
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: red.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Icon(Iconsax.heart5, color: red, size: 20),
-                  SizedBox(width: 12),
-                  Text(
-                    '${favoriteProducts.length} ${favoriteProducts.length == 1 ? 'Favorite' : 'Favorites'}',
-                    style: TextStyle(
-                      color: red,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 0.75,
-                ),
-                itemCount: favoriteProducts.length,
-                itemBuilder: (context, index) {
-                  final product = favoriteProducts[index];
-                  return _buildFavoriteItem(product);
-                },
-              ),
-            ),
-          ],
-        ),
+      child: ListView.builder(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        itemCount: favoriteProducts.length,
+        itemBuilder: (context, index) {
+          final product = favoriteProducts[index];
+          return Padding(
+            padding: EdgeInsets.only(bottom: 16),
+            child: _buildFavoriteItem(product),
+          );
+        },
       ),
     );
   }
 
   Widget _buildFavoriteItem(FoodModel product) {
     return Container(
+      height: 100,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: Offset(0, 5),
+            blurRadius: 8,
+            offset: Offset(0, 2),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Expanded(
-            flex: 3,
-            child: Stack(
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: imagebackground,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                  ),
-                  child: Image.asset(
-                    product.imageCard,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: GestureDetector(
-                    onTap: () => _toggleFavorite(product),
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        Iconsax.heart5,
-                        color: red,
-                        size: 16,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+          // Product Image
+          Container(
+            width: 80,
+            height: 80,
+            margin: EdgeInsets.all(10),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: SmartImage(
+                imagePath: product.imageCard,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
+          // Product Details
           Expanded(
-            flex: 2,
             child: Padding(
-              padding: EdgeInsets.all(12),
+              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    product.name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    product.specialItems,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '\$${product.price.toStringAsFixed(2)}',
+                        product.name,
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: red,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      Row(
-                        children: [
-                          Icon(Iconsax.star1, color: orange, size: 14),
-                          SizedBox(width: 4),
-                          Text(
-                            product.rate.toString(),
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
+                      SizedBox(height: 2),
+                      Text(
+                        product.category,
+                        style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                       ),
                     ],
                   ),
+                  Text(
+                    '\$${product.price.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: red,
+                    ),
+                  ),
                 ],
+              ),
+            ),
+          ),
+          // Delete Button
+          Padding(
+            padding: EdgeInsets.all(15),
+            child: GestureDetector(
+              onTap: () => _toggleFavorite(product),
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Icon(Iconsax.trash, color: red, size: 18),
               ),
             ),
           ),

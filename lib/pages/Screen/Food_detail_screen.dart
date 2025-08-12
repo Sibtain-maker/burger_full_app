@@ -1,5 +1,6 @@
 import 'package:burger_app_full/Core/models/product_model.dart';
 import 'package:burger_app_full/Core/Utils/const.dart';
+import 'package:burger_app_full/widgets/smart_image.dart';
 import 'package:flutter/material.dart';
 
 class FoodDetailScreen extends StatefulWidget {
@@ -72,8 +73,8 @@ class _FoodDetailScreenState extends State<FoodDetailScreen> {
                       ),
                       // Burger image
                       Center(
-                        child: Image.network(
-                          widget.foodModel.imageDetail,
+                        child: SmartImage(
+                          imagePath: widget.foodModel.imageDetail,
                           height: 300,
                           width: 300,
                           fit: BoxFit.contain,

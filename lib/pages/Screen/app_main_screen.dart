@@ -1,6 +1,7 @@
 import 'package:burger_app_full/Core/Utils/const.dart';
 import 'package:burger_app_full/pages/Screen/Profile_screen.dart';
 import 'package:burger_app_full/pages/Screen/foood_app_home_screen.dart';
+import 'package:burger_app_full/pages/Screen/favorites_screen.dart';
 import 'package:burger_app_full/pages/Screen/cart_screen.dart';
 import 'package:burger_app_full/service/cart_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,7 +23,7 @@ class _AppMainScreenState extends State<AppMainScreen> {
 
   final List<Widget> _pages = [
     FooodAppHomeScreen(),
-    Scaffold(), // Heart page
+    FavoritesScreen(), // Heart page - now shows actual favorites
     ProfileScreen(),
     CartScreen(), // Cart page
   ];
