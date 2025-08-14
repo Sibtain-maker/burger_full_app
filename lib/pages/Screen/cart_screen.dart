@@ -7,7 +7,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+  final VoidCallback? onNavigateToHome;
+  
+  const CartScreen({super.key, this.onNavigateToHome});
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -129,7 +131,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => widget.onNavigateToHome?.call(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: red,
                     foregroundColor: Colors.white,

@@ -21,17 +21,30 @@ class _AppMainScreenState extends State<AppMainScreen> {
   int currentPage = 0;
   final CartService cartService = CartService();
 
-  final List<Widget> _pages = [
-    FooodAppHomeScreen(),
-    FavoritesScreen(), // Heart page - now shows actual favorites
-    ProfileScreen(),
-    CartScreen(), // Cart page
-  ];
+  late final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
     cartService.initializeCart();
+    _pages = [
+      FooodAppHomeScreen(onNavigateToCart: () => _navigateToCart()),
+      FavoritesScreen(), // Heart page - now shows actual favorites
+      ProfileScreen(),
+      CartScreen(onNavigateToHome: () => _navigateToHome()), // Cart page
+    ];
+  }
+
+  void _navigateToCart() {
+    setState(() {
+      currentIndex = 3; // Switch to cart tab (index 3)
+    });
+  }
+
+  void _navigateToHome() {
+    setState(() {
+      currentIndex = 0; // Switch to home tab (index 0)
+    });
   }
 
   @override

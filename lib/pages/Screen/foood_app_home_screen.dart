@@ -9,9 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:burger_app_full/pages/Screen/view_all_screen.dart';
+import 'package:burger_app_full/pages/Screen/Profile_screen.dart';
 
 class FooodAppHomeScreen extends StatefulWidget {
-  const FooodAppHomeScreen({super.key});
+  final VoidCallback? onNavigateToCart;
+  
+  const FooodAppHomeScreen({super.key, this.onNavigateToCart});
 
   @override
   State<FooodAppHomeScreen> createState() => _FooodAppHomeScreenState();
@@ -359,15 +362,20 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      leading: Container(
-        height: 45,
-        width: 45,
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+      leading: GestureDetector(
+        onTap: () {
+          widget.onNavigateToCart?.call();
+        },
+        child: Container(
+          height: 45,
+          width: 45,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Image.asset('assets/food-delivery/icon/dash.png'),
         ),
-        child: Image.asset('assets/food-delivery/icon/dash.png'),
       ),
       centerTitle: true,
       title: Row(
@@ -393,10 +401,18 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 16),
-          child: SizedBox(
-            height: 45,
-            width: 45,
-            child: Image.asset('assets/food-delivery/profile.png'),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfileScreen()),
+              );
+            },
+            child: SizedBox(
+              height: 45,
+              width: 45,
+              child: Image.asset('assets/food-delivery/profile.png'),
+            ),
           ),
         ),
       ],
