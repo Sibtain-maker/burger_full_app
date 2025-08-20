@@ -243,13 +243,13 @@ class _FooodAppHomeScreenState extends State<FooodAppHomeScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     decoration: BoxDecoration(
                       color: selectedCategory == category.name
-                          ? Colors.red.withOpacity(0.1)
+                          ? Colors.red.withValues(alpha: 0.1)
                           : Colors.white,
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(
                         color: selectedCategory == category.name
                             ? Colors.red
-                            : Colors.grey.withOpacity(0.5),
+                            : Colors.grey.withValues(alpha: 0.5),
                       ),
                     ),
                     child: Row(

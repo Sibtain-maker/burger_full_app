@@ -110,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: Offset(0, 5),
           ),
@@ -124,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 CircleAvatar(
                   radius: 50,
-                  backgroundColor: red.withOpacity(0.1),
+                  backgroundColor: red.withValues(alpha: 0.1),
                   backgroundImage: userProfile?.avatarUrl != null
                       ? NetworkImage(userProfile!.avatarUrl!)
                       : null,
@@ -321,7 +321,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: Offset(0, 5),
           ),
@@ -363,7 +363,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Container(
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: red.withOpacity(0.1),
+                color: red.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(icon, color: red, size: 20),
@@ -410,7 +410,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: ElevatedButton(
         onPressed: () => _showLogoutDialog(),
         style: ElevatedButton.styleFrom(
-          backgroundColor: red.withOpacity(0.1),
+          backgroundColor: red.withValues(alpha: 0.1),
           foregroundColor: red,
           elevation: 0,
           shape: RoundedRectangleBorder(

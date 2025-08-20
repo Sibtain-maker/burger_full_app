@@ -111,7 +111,7 @@ class FoodModel {
       productId = json['name']?.toString().toLowerCase().replaceAll(' ', '_') ?? 'unknown';
     }
     
-    print('FoodModel.fromJson: Creating product with ID: $productId, Name: ${json['name']}');
+    // Debug: Creating product with ID: $productId, Name: ${json['name']}
     
     return FoodModel(
       id: productId,

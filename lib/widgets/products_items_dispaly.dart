@@ -1,6 +1,6 @@
 import 'package:burger_app_full/Core/models/product_model.dart';
 import 'package:burger_app_full/Core/Utils/const.dart';
-import 'package:burger_app_full/pages/Screen/Food_detail_screen.dart';
+import 'package:burger_app_full/pages/Screen/food_detail_screen.dart';
 import 'package:burger_app_full/service/cart_service.dart';
 import 'package:burger_app_full/service/memory_favorites_service.dart';
 import 'package:burger_app_full/widgets/smart_image.dart';

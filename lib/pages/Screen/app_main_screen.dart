@@ -1,5 +1,5 @@
 import 'package:burger_app_full/Core/Utils/const.dart';
-import 'package:burger_app_full/pages/Screen/Profile_screen.dart';
+import 'package:burger_app_full/pages/Screen/profile_screen.dart';
 import 'package:burger_app_full/pages/Screen/foood_app_home_screen.dart';
 import 'package:burger_app_full/pages/Screen/favorites_screen.dart';
 import 'package:burger_app_full/pages/Screen/cart_screen.dart';

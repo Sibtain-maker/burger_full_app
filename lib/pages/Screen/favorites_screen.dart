@@ -293,7 +293,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: Offset(0, 2),
           ),
@@ -364,7 +364,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: red.withOpacity(0.1),
+                  color: red.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Icon(Iconsax.trash, color: red, size: 18),
